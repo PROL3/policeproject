@@ -27,7 +27,7 @@ const SignIn = () => {
     const loginData = { email, password };
 
     try {
-      const response = await axios.post('http://localhost:3000/api/login', loginData);
+      const response = await axios.post('http://localhost:3000/api/auth/login', loginData);
       if(response.data){
         alert('ההתחברות הצליחה');
         console.log('ההתחברות בוצעה בהצלחה:', response.data);

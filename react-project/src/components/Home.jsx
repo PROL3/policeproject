@@ -15,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/ads");
+        const response = await axios.get("http://localhost:3000/api/ads/getads");
         // Assuming the response contains the ads array directly
         console.log(response.data);
         if (response.data && Array.isArray(response.data.ads)) {
@@ -41,10 +41,30 @@ const Home = () => {
     });
   };
 
-  const handleDelete = () => {
-    setAds((prevAds) => prevAds.filter((ad) => !selectedAds.includes(ad.id)));
-    setSelectedAds([]);
+  const handleDelete = async () => {
+    try {
+      // Delete the selected ads from the backend
+      await axios.delete(`http://localhost:3000/api/ads/${selectedAds.join(",")}`);
+      
+      // Remove the selected ads from the frontend state
+      setAds(prevAds => prevAds.filter(ad => !selectedAds.includes(ad.id)));
+  
+      // Reset the selected ads state
+      setSelectedAds([]);
+      
+      alert('Selected ads deleted successfully');
+    } catch (error) {
+      console.error('Error deleting ads:', error);
+      alert('Failed to delete ads');
+    }
   };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target; // Destructure the input field's name and value
+    setNewAd((prevNewAd) => ({
+      ...prevNewAd,
+      [name]: value, // Dynamically update the relevant field in the state
+    }));
+  };    
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,7 +75,7 @@ const Home = () => {
   
     try {
       // Post the new ad to the backend
-      await axios.post("http://localhost:3000/api/ads", newAdObject);
+      await axios.post("http://localhost:3000/api/ads/newads", newAdObject);
       // Fetch the updated list of ads after successful submission
       const updatedAds = await axios.get("http://localhost:3000/api/ads");
       setAds(updatedAds.data.ads); // Update the state with the new list of ads

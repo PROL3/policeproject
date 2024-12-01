@@ -1,9 +1,9 @@
 const express = require("express");
 const connectDB=require("./db/connectDB")
 const cors=require("cors")
-const app=express();
 const authRoutes=require("./routes/auth")
 const adsRoutes=require("./routes/ads")
+const app=express();
 
 app.use(express.json())
 connectDB()

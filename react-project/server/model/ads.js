@@ -7,5 +7,5 @@ const adSchema = new mongoose.Schema({
     image: { type: String, required: true }, // Store image file name (or path) here
   });
 
-const Ads = mongoose.model("Ads", adSchema);
+const Ads = mongoose.model("ads", adSchema);
 module.exports=Ads;

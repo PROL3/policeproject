@@ -1,6 +1,5 @@
 // loginRoute.js
 const router = require("express").Router();
-const mongoose = require("mongoose");
 const UserModel = require("../model/user"); // Import your UserModel
 
 // Login route
