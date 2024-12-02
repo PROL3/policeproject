@@ -31,13 +31,12 @@ const SignIn = () => {
       if(response.data){
         alert('ההתחברות הצליחה');
         console.log('ההתחברות בוצעה בהצלחה:', response.data);
-        
         // Redirect to /home page using useNavigate
-        navigate('/');
+        navigate('/', { state: { role: response.data.role } });
       } else {
         setFormData((prevState) => ({
           ...prevState,
-          error: 'No token received, please try again.',
+          error: 'error with login, please try again.',
         }));
       }
     } catch (error) {

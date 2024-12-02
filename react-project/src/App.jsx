@@ -7,11 +7,11 @@ import SignIn from './components/SignIn';
 function App() {
   return (
     <Router>
-      <nav className='bg-gray-800 max-w-[500px] mx-auto text-white p-4 rounded-lg mb-4'>
-        <div className='container mx-auto flex justify-center'>
-          <div className='flex space-x-4'>
-            <Link to='/signpage' className='hover:underline'>התחברות לאדמין</Link>
-            <Link to='/' className='hover:underline'>לוח המודעות</Link>
+      <nav className='lg:mt-0 bg-gray-800 max-w-[500px] mx-auto text-white p-4 rounded-lg mb-4'>
+        <div className='flex justify-center'>
+          <div className='flex gap-8'>
+          <Link to='/' className='hover:underline'>לוח המודעות</Link>
+          <Link to='/signpage' className='hover:underline'>התחברות לאדמין</Link>
           </div>
         </div>
       </nav>

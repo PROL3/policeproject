@@ -16,15 +16,16 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password." });
     }
-    const isMatch= password==user.password ;
+    role=user.role;
+    const isMatch = password==user.password ;
     // If passwords don't match
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password." });
     }
-    res.status(200).json({ message: "Login successful" /*, token: token */ });
+    res.status(200).json({ message: "Login successful",role});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" ,error});
   }
 });
 

@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import axios
+import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
-  const [ads, setAds] = useState([]);  // Ensuring it's an array by default
+  const [ads, setAds] = useState([]);
   const [selectedAds, setSelectedAds] = useState([]);
-  const [showForm, setShowForm] = useState(false); // To toggle the form visibility
+  const [showForm, setShowForm] = useState(false);
   const [newAd, setNewAd] = useState({
     title: "",
     description: "",
     image: "",
   });
-  const [error, setError] = useState(""); // For error messages
+  const [editAd, setEditAd] = useState(null); // To track which ad is being edited
+  const [error, setError] = useState("");
+  const location = useLocation();
+  const role = location.state?.role;
 
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/ads/getads");
-        // Assuming the response contains the ads array directly
-        console.log(response.data);
+        const response = await axios.get(
+          "http://localhost:3000/api/ads/getads"
+        );
         if (response.data && Array.isArray(response.data.ads)) {
-          setAds(response.data.ads); // Update ads if it's an array
+          setAds(response.data.ads);
         } else {
           setError("No ads found in the response.");
         }
@@ -43,154 +47,188 @@ const Home = () => {
 
   const handleDelete = async () => {
     try {
-      // Delete the selected ads from the backend
-      await axios.delete(`http://localhost:3000/api/ads/${selectedAds.join(",")}`);
-      
-      // Remove the selected ads from the frontend state
-      setAds(prevAds => prevAds.filter(ad => !selectedAds.includes(ad.id)));
-  
-      // Reset the selected ads state
+      await axios.delete(
+        `http://localhost:3000/api/ads/${selectedAds.join(",")}`
+      );
+
+      setAds((prevAds) =>
+        prevAds.filter((ad) => !selectedAds.includes(ad._id))
+      );
+
       setSelectedAds([]);
-      
-      alert('Selected ads deleted successfully');
+      alert("Selected ads deleted successfully");
     } catch (error) {
-      console.error('Error deleting ads:', error);
-      alert('Failed to delete ads');
+      console.error("Error deleting ads:", error);
+      alert("Failed to delete ads");
     }
   };
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target; // Destructure the input field's name and value
+    const { name, value } = e.target;
     setNewAd((prevNewAd) => ({
       ...prevNewAd,
-      [name]: value, // Dynamically update the relevant field in the state
+      [name]: value,
     }));
-  };    
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newAdObject = {
-      ...newAd,
-      id: ads.length + 1, // Automatically set the new ID based on the current length of ads
-    };
-  
     try {
-      // Post the new ad to the backend
-      await axios.post("http://localhost:3000/api/ads/newads", newAdObject);
-      // Fetch the updated list of ads after successful submission
-      const updatedAds = await axios.get("http://localhost:3000/api/ads");
-      setAds(updatedAds.data.ads); // Update the state with the new list of ads
-      setNewAd({ title: "", description: "", image: "" }); // Clear the form
-      setShowForm(false); // Hide the form after submission
+      const response = await axios.post(
+        "http://localhost:3000/api/ads/newads",
+        newAd
+      );
+      setNewAd({ title: "", description: "", image: "" });
+      setShowForm(false);
+      window.location.reload();
     } catch (error) {
       setError("There was an error adding the ad.");
     }
   };
-  
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditAd((prevEditAd) => ({
+      ...prevEditAd,
+      [name]: value,
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/api/ads/update/${editAd._id}`,
+        editAd
+      );
+      setAds((prevAds) =>
+        prevAds.map((ad) =>
+          ad._id === editAd._id ? { ...ad, ...editAd } : ad
+        )
+      );
+      setEditAd(null); // Close the edit form after successful update
+    } catch (error) {
+      setError("There was an error updating the ad.");
+    }
+  };
 
   return (
     <div>
-      <h1 className="text-3xl font-bold underline text-center ">לוח מודעות</h1>
+      <h1 className="text-center">לוח מודעות</h1>
 
-      {error && <p className="text-red-500 text-center">{error}</p>} {/* Display error message */}
+      {error && <p className="error-message">{error}</p>}
 
       {selectedAds.length > 0 && (
-        <button
-          onClick={handleDelete}
-          className="mt-5 mr-2 bg-red-500 text-white p-2 rounded-lg"
-        >
+        <button onClick={handleDelete} className="btndel">
           מחק מודעות נבחרות
         </button>
       )}
 
-      {/* Button to show the ad creation form */}
-      <button
-        onClick={() => setShowForm(true)}
-        className="mt-5 p-2 bg-green-500 text-white rounded-lg"
-      >
-        הוספת מודעה
-      </button>
+      {role === "admin" && (
+        <button onClick={() => setShowForm(!showForm)} className="btn-add">
+          הוספת מודעה
+        </button>
+      )}
 
-      {/* Show form for adding a new ad */}
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="mt-5 p-5 border border-gray-300 rounded-lg shadow-md"
-        >
-          <h2 className="text-xl font-semibold mb-4">הוסף מודעה חדשה</h2>
-          <div className="mb-4">
-            <label htmlFor="title" className="block mb-2">כותרת</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={newAd.title}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="description" className="block mb-2">תיאור</label>
-            <input
-              type="text"
-              id="description"
-              name="description"
-              value={newAd.description}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="image" className="block mb-2">תמונה (URL)</label>
-            <input
-              type="text"
-              id="image"
-              name="image"
-              value={newAd.image}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-          >
+        <form onSubmit={handleSubmit}>
+          <h2>הוסף מודעה חדשה</h2>
+          <input
+            type="text"
+            name="title"
+            value={newAd.title}
+            onChange={handleInputChange}
+            placeholder="כותרת"
+            required
+          />
+          <input
+            type="text"
+            name="description"
+            value={newAd.description}
+            onChange={handleInputChange}
+            placeholder="תיאור"
+            required
+          />
+          <input
+            type="text"
+            name="image"
+            value={newAd.image}
+            onChange={handleInputChange}
+            placeholder="תמונה (URL)"
+            required
+          />
+          <button type="submit" className="bg-blue-500">
             הוסף מודעה
           </button>
         </form>
       )}
 
-      <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {Array.isArray(ads) && ads.length === 0 ? (
-          <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex items-center justify-center min-h-screen">
-            <p className="text-center">אין מודעות להצגה כרגע.</p>
+      {/* Edit Form */}
+      {editAd && (
+        <form onSubmit={handleEditSubmit}>
+          <h2>ערוך מודעה</h2>
+          <input
+            type="text"
+            name="title"
+            value={editAd.title}
+            onChange={handleEditChange}
+            placeholder="כותרת"
+            required
+          />
+          <input
+            type="text"
+            name="description"
+            value={editAd.description}
+            onChange={handleEditChange}
+            placeholder="תיאור"
+            required
+          />
+          <input
+            type="text"
+            name="image"
+            value={editAd.image}
+            onChange={handleEditChange}
+            placeholder="תמונה (URL)"
+            required
+          />
+          <button type="submit" className="bg-green-500">
+            שמור שינויים
+          </button>
+          <button type="button" onClick={() => setEditAd(null)} className="bg-red-500">
+            ביטול
+          </button>
+        </form>
+      )}
+
+      <div className="ads-container">
+        {ads.length === 0 ? (
+          <div className="empty-ads-message">
+            <p>אין מודעות להצגה כרגע.</p>
           </div>
         ) : (
-          Array.isArray(ads) &&
           ads.map((ad) => (
-            <div
-              key={ad.id}
-              className="p-3 border border-gray-300 rounded-lg shadow-md"
-            >
-              <h2 className="text-xl font-semibold mb-2">{ad.title}</h2>
-              <p className="text-gray-600 mb-4">{ad.description}</p>
-              <img
-                src={`${ad.image}`}
-                alt={ad.title}
-                className="w-full max-h-64 object-fill rounded-md"
-              />
-              <div className="mt-2">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={selectedAds.includes(ad.id)}
-                    onChange={() => handleCheckboxChange(ad.id)}
-                  />
-                  בחר מודעה למחיקה
-                </label>
-              </div>
+            <div key={ad._id} className="ad-card">
+              <h2>{ad.title}</h2>
+              <p>{ad.description}</p>
+              <img src={ad.image} alt={ad.title} />
+              {role === "admin" && (
+                <>
+                  <button
+                    onClick={() => setEditAd(ad)}
+                    className="btn-edit"
+                  >
+                    ערוך מודעה
+                  </button>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedAds.includes(ad._id)}
+                      onChange={() => handleCheckboxChange(ad._id)}
+                    />
+                    בחר מודעה למחיקה
+                  </label>
+                </>
+              )}
             </div>
           ))
         )}
