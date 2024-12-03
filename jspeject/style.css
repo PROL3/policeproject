@@ -1,0 +1,53 @@
+body {
+    display: flex;
+    flex-direction: row; /* מסדר את האלמנטים משמאל לימין */
+    margin: 30px;
+    padding: 0;
+    height: 100vh; /* גובה הדף יהיה בגודל המסך */
+    justify-content: space-around;
+    align-items: center;
+    background-color: #edd5d5;
+}
+
+/* עיצוב לכל אלמנט div בדף */
+div.form-style  {
+    background-color: lightblue;
+    padding: 20px;
+    width: 400px;
+    height: 300px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    border-radius: 20px;
+}
+
+
+#file-input {
+    background-color: rgb(128, 60, 206);
+    max-width: 200px;   
+}
+
+#metadata-form div {
+    margin-right: 10px; /* Add space between fields */
+    margin-bottom: 5px; /* Space between rows */
+    display: flex;
+    flex-direction: row; /* Align label and input horizontally */
+    align-items: center;
+}
+
+#metadata-form label {
+    margin-right: 10px; /* Space between label and input */
+    font-weight: bold;
+}
+
+
+button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

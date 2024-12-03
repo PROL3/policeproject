@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Extract Image Metadata</title>
+  </head>
+  <body>
+    <div class="form-style">
+      <input type="file" id="file-input" accept="image/*" />
+    </div>
+
+    <div class="form-style">
+      <p id="metadata"></p>
+      <form id="metadata-form">
+        <div>
+          <label for="orientation">Orientation:</label>
+          <input type="text" id="orientation" name="orientation" />
+        </div>
+        <div>
+          <label for="dateTime">Date Time:</label>
+          <input type="text" id="dateTime" name="dateTime" />
+        </div>
+        <div>
+          <label for="make">Camera Make:</label>
+          <input type="text" id="make" name="make" />
+        </div>
+        <div>
+          <label for="model">Camera Model:</label>
+          <input type="text" id="model" name="model" />
+        </div>
+        <div>
+          <label for="width">Width:</label>
+          <p type="text" id="width" name="width"></p>
+        </div>
+        <div>
+          <label for="height">Height:</label>
+          <p type="text" id="height" name="height"></p>
+        </div>
+        <div>
+          <label for="size">File Size:</label>
+          <p type="text" id="size" name="size"></p>
+        </div>
+        <button type="submit">Save Image</button>
+      </form>
+    </div>
+    <br />
+    <button id="download" style="display: none">Download Image</button>
+
+    <script src="https://cdn.rawgit.com/exif-js/exif-js/master/exif.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/piexifjs/1.0.6/piexif.min.js"></script>
+    <script src="func.js"></script>
+
+  </body>
+  
+</html>
