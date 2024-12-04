@@ -1,0 +1,19 @@
+{
+  "name": "jspeject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "func.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "image-metadata-editor": "^2023.2.3",
+    "piexifjs": "^1.0.6"
+  }
+}
