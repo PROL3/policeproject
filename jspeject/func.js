@@ -1,12 +1,12 @@
 let uploadedImage;
-const getBase64DataFromJpegFile = (filename) => {
-  const data = fs.readFileSync(filename);
-  return data.toString('binary');
-};
+let imageFile; // Store the image file for later use
+
 // Load and read EXIF metadata from the image
 document.getElementById("file-input").addEventListener("change", function (event) {
   const file = event.target.files[0];
   if (file) {
+    imageFile = file; // Save the original file
+
     const reader = new FileReader();
     reader.onload = function (e) {
       const image = new Image();
@@ -19,9 +19,9 @@ document.getElementById("file-input").addEventListener("change", function (event
           console.log(metadata); // Log metadata for debugging
 
           // Fill the form with metadata if available
-          document.getElementById("dateTime").value = metadata.DateTime;
-          document.getElementById("make").value = metadata.Make ;
-          document.getElementById("model").value = metadata.Model;
+          document.getElementById("dateTime").value = metadata.DateTime || '';
+          document.getElementById("make").value = metadata.Make || '';
+          document.getElementById("model").value = metadata.Model || '';
         });
       };
       image.src = e.target.result;
@@ -39,30 +39,37 @@ document.getElementById("metadata-form").addEventListener("submit", function (e)
   const make = document.getElementById("make").value;
   const model = document.getElementById("model").value;
 
-  // Modify EXIF data
-  EXIF.getData(uploadedImage, function () {
-    const piexif = window.piexif;
-    console.log(uploadedImage)
+  if (!imageFile) {
+    alert("No image uploaded!");
+    return;
+  }
 
-    const base64Data = getBase64DataFromJpegFile(uploadedImage);
-    const exifData = piexif.load("./pic1.jpg");
-    console.log(exifData)
+  // Modify EXIF data
+  const piexif = window.piexif;
+
+  // Convert the image to base64 to modify EXIF data
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageData = e.target.result;
+
+    // Load EXIF data from the image
+    let exifData = piexif.load(imageData);
 
     // Update EXIF data based on form input
-    exifData['0th'][piexif.ImageIFD.Make] = make;
-    exifData['0th'][piexif.ImageIFD.Model] = model;
-    exifData['0th'][piexif.ImageIFD.DateTime] = dateTime;
-    let exifBytes = piexif.dump(exifData);
-    let newExifData = piexif.insert(exifBytes, uploadedImage.src);
-    console.log(exifData)
+    if (make) exifData['0th'][piexif.ImageIFD.Make] = make;
+    if (model) exifData['0th'][piexif.ImageIFD.Model] = model;
+    if (dateTime) exifData['0th'][piexif.ImageIFD.DateTime] = dateTime;
+
+    // Dump the modified EXIF data and insert it back into the image
+    const exifBytes = piexif.dump(exifData);
+    const newExifData = piexif.insert(exifBytes, imageData);
 
     // Create a new image with updated EXIF data
-   
-      const a = document.createElement("a");
-      a.href =newExifData;
-      a.download = "updated_image.jpg"; // Set the download filename
-      a.click(); // Trigger the download
-      alert("Image updated and ready to download.");
-   
-  });
+    const a = document.createElement("a");
+    a.href = newExifData;
+    a.download = "updated_image.jpg"; // Set the download filename
+    a.click(); // Trigger the download
+  };
+
+  reader.readAsDataURL(imageFile); // Read the file as Data URL
 });

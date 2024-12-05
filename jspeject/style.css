@@ -1,48 +1,68 @@
 body {
     display: flex;
-    flex-direction: row; /* מסדר את האלמנטים משמאל לימין */
-    margin: 30px;
-    padding: 0;
-    height: 100vh; /* גובה הדף יהיה בגודל המסך */
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column; /* Arrange the elements vertically */
+    justify-content: center; /* Center everything vertically */
+    align-items: center; /* Center everything horizontally */
+    height: 100vh; /* Full height of the viewport */
     background-color: #edd5d5;
 }
 
-/* עיצוב לכל אלמנט div בדף */
-div.form-style  {
-    background-color: lightblue;
-    padding: 20px;
-    width: 400px;
-    height: 300px;
+/* Style for the title */
+h1 {
+    font-size: 2rem; /* Adjust font size */
+    margin-top: 20px; /* Add space at the top */
+    margin-bottom: 30px; /* Space below the title */
     text-align: center;
+    width: 100%;
+
+}
+
+/* Container for the file input and form */
+.page {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
+    justify-content: space-around; /* Space the file input and form apart */
+    align-items: center; /* Align vertically */
+    width: 70%; /* Adjust the width of the container */
+    height: 40%;
+    max-width: 1200px; /* Limit the maximum width */
+    background-color: #ebb1b1ee;
+    border-radius: 20px;
+
+
+}
+
+/* Style for the file input */
+#file-input {
+    background-color: rgb(128, 60, 206);
+    max-width: 200px;   
+    padding: 15px;
+    margin-right: 40px; /* Add space to the right of the file input */
     border-radius: 20px;
 }
 
 
-#file-input {
-    background-color: rgb(128, 60, 206);
-    max-width: 200px;   
-}
-
+/* Style for form fields */
 #metadata-form div {
-    margin-right: 10px; /* Add space between fields */
-    margin-bottom: 5px; /* Space between rows */
-    display: flex;
-    flex-direction: row; /* Align label and input horizontally */
-    align-items: center;
+    margin-bottom: 15px;
+
 }
 
+/* Style for form labels */
 #metadata-form label {
-    margin-right: 10px; /* Space between label and input */
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
+/* Style for form inputs */
+#metadata-form input {
+    padding: 8px;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
 
+/* Style for the submit button */
 button {
     padding: 10px;
     background-color: #4CAF50;
@@ -50,4 +70,6 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    width: 100%;
+    max-width: 200px;
 }

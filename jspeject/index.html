@@ -3,24 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
   <title>Modify EXIF Data</title>
-</script></head>
+</head>
 <body>
   <h1>Modify EXIF Data</h1>
-  
-  <input type="file" id="file-input" accept="image/jpeg">
-  <form id="metadata-form">
-    <label for="make">Make: </label>
-    <input type="text" id="make"><br>
-    <label for="model">Model: </label>
-    <input type="text" id="model"><br>
-    <label for="dateTime">DateTime: </label>
-    <input type="text" id="dateTime"><br>
-    <button type="submit">Modify and Download Image</button>
-  </form>
+  <div class="page">
+    <div>
+      <input type="file" id="file-input" accept="image/jpeg">
+    </div>
+    <div>
+      <form id="metadata-form">
+        <div>
+          <label for="make">Make: </label>
+          <input type="text" id="make"><br>
+        </div>
+        <div>
+          <label for="model">Model: </label>
+          <input type="text" id="model"><br>
+        </div>
+        <div>
+          <label for="dateTime">DateTime: </label>
+          <input type="text" id="dateTime"><br>
+        </div>
+        <button type="submit">Modify and Download Image</button>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.min.js"></script>
-  <script src=''></script>
+  <script src='func.js'></script>
   
 </body>
 </html>
